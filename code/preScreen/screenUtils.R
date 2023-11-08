@@ -27,8 +27,8 @@ cellPaste <- function(screenedIn, celllength = 65){
 }
 
 #produce screen tables and heat maps for match/mismatch
-featureScreen.MatchvsMismatch <- function(sieveData, featureVars, newFeatureName, insert,tableDir, figureDir, fileTag){
-  #browser()
+featureScreen.MatchvsMismatch <- function(sieveData, featureVars, newFeatureName, cutoff = 4, tableDir, figureDir, fileName, plotTitle){
+
   featureData <- subset(dplyr::select(sieveData, all_of(c("subjid","armdesc", "hiv1event",featureVars))), hiv1event == 1)
   colnames(featureData ) <- c("subjid","armDesc", "event",newFeatureName)
   
@@ -57,7 +57,7 @@ featureScreen.MatchvsMismatch <- function(sieveData, featureVars, newFeatureName
     }
   })
   
-  cutoff = 4
+
   table2$ind <- as.factor(ifelse(table2$nTxPoolCases>=cutoff, paste0(">= ", cutoff), paste0("< ", cutoff)))
   table2$ind <- factor(table2$ind, levels = c(paste0(">= ", cutoff), paste0("< ", cutoff)))
   table2$plotY <- factor(table2$position, levels = rev(newFeatureName))
@@ -76,16 +76,16 @@ featureScreen.MatchvsMismatch <- function(sieveData, featureVars, newFeatureName
   
   
   
-  table3 <- tibble("Insert" = character(), "m" = numeric(),"Positions Screened in" = character())
+  table3 <- tibble("m" = numeric(),"Positions Screened in" = character())
   
-  table3 <- add_row(.data = table3, "Insert" = insert, "m" = length(posScreenedIn$position), 
+  table3 <- add_row(.data = table3, "m" = length(posScreenedIn$position), 
                     "Positions Screened in" = cellPaste(posScreenedIn))
  
   
-  write.csv(table3, file.path(tableDir, paste0(insert,"posScreenedIn",fileTag, ".csv")), row.names = FALSE)
-  
+  write.csv(table3, file.path(tableDir, paste0(fileName, ".csv")), row.names = FALSE)
+  #browser()
   x = data.frame(vars = featureVars, newName = newFeatureName)
-  write.csv(x$vars[x$newName %in% posScreenedIn$position], file.path(tableDir, paste0(insert,"posVarScreenedIn",fileTag, ".csv")), row.names = FALSE)
+  write.csv(x$vars[x$newName %in% posScreenedIn$position], file.path(tableDir, paste0("var", fileName, ".csv")), row.names = FALSE)
   
   
   #plot 
@@ -113,13 +113,13 @@ featureScreen.MatchvsMismatch <- function(sieveData, featureVars, newFeatureName
   names(locGroup) <- locGroupName
   for(i in 1:length(locGroupName)){
     subTable <- subset(table2, plotY %in% locGroup[[i]])
-    pdf(file = file.path(figureDir, paste0("screening",insert,"_",i, fileTag, ".pdf")), 
+    pdf(file = file.path(figureDir, paste0("plot_",fileName,"_",i, ".pdf")), 
         width = 3.7, height = 10.5)
     textcol <- "black"
     labelsize <- 10
     p <- ggplot(subTable, aes(x = matchString, y = plotY, fill = ind))+
       geom_tile(colour="white")+
-      guides(fill=guide_legend(title="Number of\ncases"))+
+      guides(fill=guide_legend(title="No. of\ncases"))+
       scale_y_discrete(expand=c(0,0))+
       scale_fill_manual(values=c("#008080", "grey"))+
       theme_grey(base_size=10)+
@@ -127,7 +127,7 @@ featureScreen.MatchvsMismatch <- function(sieveData, featureVars, newFeatureName
       xlab("")+
       ylab("")+
       #coord_equal()+
-      ggtitle(paste(insert,"Match/Mismatch\nat position", locGroupName[i]))+
+      ggtitle(paste(plotTitle, locGroupName[i]))+
       theme(
         legend.position="right",legend.direction="vertical",
         legend.title=element_text(colour=textcol, size = labelsize),
@@ -147,8 +147,8 @@ featureScreen.MatchvsMismatch <- function(sieveData, featureVars, newFeatureName
 }
 
 #produce screen tables and heat maps for amino acid present/absent
-featureScreen.is.aa <- function(sieveData, featureVars, newFeatureName, insert,tableDir, figureDir, fileTag){
-  
+featureScreen.presentVsAbsent <- function(sieveData, featureVars, newFeatureName, cutoff = 4, tableDir, figureDir, fileName, plotTitle){
+  #browser()
   featureData <- subset(dplyr::select(sieveData, all_of(c("subjid","armdesc", "hiv1event",featureVars))), hiv1event == 1)
   colnames(featureData ) <- c("subjid","armDesc", "event",newFeatureName)
   
@@ -177,7 +177,7 @@ featureScreen.is.aa <- function(sieveData, featureVars, newFeatureName, insert,t
     }
   })
   
-  cutoff = 4
+  
   table2$ind <- as.factor(ifelse(table2$nTxPoolCases>=cutoff, paste0(">= ", cutoff), paste0("< ", cutoff)))
   table2$ind <- factor(table2$ind, levels = c(paste0(">= ", cutoff), paste0("< ", cutoff)))
   table2$plotY <- factor(table2$position, levels = rev(newFeatureName))
@@ -195,16 +195,17 @@ featureScreen.is.aa <- function(sieveData, featureVars, newFeatureName, insert,t
   
   
   
-  table3 <- tibble("Insert" = character(), "m" = numeric(),"Positions Screened in" = character())
+  table3 <- tibble("m" = numeric(),"Positions Screened in" = character())
   
-  table3 <- add_row(.data = table3, "Insert" = insert, "m" = length(posScreenedIn$position), 
+  table3 <- add_row(.data = table3,  "m" = length(posScreenedIn$position), 
                     "Positions Screened in" = cellPaste(posScreenedIn,celllength = 80))
   
-  #browser()
-  write.csv(table3, file.path(tableDir, paste0(insert,"posScreenedIn",fileTag, ".csv")), row.names = FALSE)
  
+  write.csv(table3, file.path(tableDir, paste0(fileName, ".csv")), row.names = FALSE)
+  #browser()
   x = data.frame(vars = featureVars, newName = newFeatureName)
-  write.csv(x$vars[x$newName %in% posScreenedIn$position], file.path(tableDir, paste0(insert,"posVarScreenedIn",fileTag, ".csv")), row.names = FALSE)
+  write.csv(x$vars[x$newName %in% posScreenedIn$position], file.path(tableDir, paste0("var", fileName, ".csv")), row.names = FALSE)
+  
   
   #plot 
   loc <- newFeatureName
@@ -225,13 +226,13 @@ featureScreen.is.aa <- function(sieveData, featureVars, newFeatureName, insert,t
   names(locGroup) <- locGroupName
   for(i in 1:length(locGroupName)){
     subTable <- subset(table2, plotY %in% locGroup[[i]])
-    pdf(file = file.path(figureDir, paste0("screening",insert,"_",i, fileTag, ".pdf")), 
+    pdf(file = file.path(figureDir, paste0("plot_",fileName,"_",i, ".pdf")), 
         width = 3.8, height = 8)
     textcol <- "black"
       labelsize <- 12
       p <- ggplot(subTable, aes(x = matchString, y = plotY, fill = ind))+
         geom_tile(colour="white")+
-        guides(fill=guide_legend(title="Number of\ncases"))+
+        guides(fill=guide_legend(title="No. of\ncases"))+
         scale_y_discrete(expand=c(0,0))+
         scale_fill_manual(values=c("#008080", "grey"))+
         theme_grey(base_size=10)+
@@ -239,7 +240,7 @@ featureScreen.is.aa <- function(sieveData, featureVars, newFeatureName, insert,t
         xlab("")+
         ylab("")+
         #coord_equal()+
-        ggtitle(paste("Amino Acid Present/Absent"))+
+        ggtitle(paste(plotTitle, locGroupName[i]))+
         theme(
           legend.position="right",legend.direction="vertical",
           legend.title=element_text(colour=textcol, size = labelsize),
@@ -258,96 +259,3 @@ featureScreen.is.aa <- function(sieveData, featureVars, newFeatureName, insert,t
   }
 }
 
-#produce screen tables and heat maps for presence/absence of sequons
-featureScreen.presenceVSabsence <- function(sieveData, featureVars, newFeatureName,tableDir, figureDir, fileTag){
-  #browser()
-  featureData <- subset(dplyr::select(sieveData, all_of(c("subjid","armdesc", "hiv1event",featureVars))), hiv1event == 1)
-  colnames(featureData ) <- c("subjid","armDesc", "event",newFeatureName)
-  
-  featureLongFormat <- tidyr::pivot_longer(featureData, cols = all_of(newFeatureName), 
-                                           names_to = "position", 
-                                           values_to = "presence",
-                                           values_drop_na = TRUE)#there are NAs in the sequence
-  
-  freqsTable <- plyr::ddply(featureLongFormat, .(armDesc, position, presence), 
-                            function(df){
-                              length(unique(df$subjid))
-                            })
-  
-  table1 <- tibble(armDesc = freqsTable$armDesc,
-                   position = freqsTable$position,
-                   presence = freqsTable$presence,
-                   "nCases" = freqsTable$V1)
-  
-  table2 <- tibble("position" = character(), "presence" = numeric(), "nTxPoolCases" = numeric())
-  
-  d_ply(table1, .(position), function(df){
-    for(pre.k in c(0,1)){
-      nTxPoolCases <- ifelse(is.null(subset(df, presence == pre.k)), 0,sum(df$nCases[df$presence == pre.k]))
-      table2 <<- add_row(.data = table2, "position" = df$position[1], "presence" = pre.k,
-                         "nTxPoolCases" = nTxPoolCases)
-    }
-  })
-  
-  cutoff = 4
-  table2$ind <- as.factor(ifelse(table2$nTxPoolCases>=cutoff, paste0(">= ", cutoff), paste0("< ", cutoff)))
-  table2$ind <- factor(table2$ind, levels = c(paste0(">= ", cutoff), paste0("< ", cutoff)))
-  table2$plotY <- factor(table2$position, levels = rev(newFeatureName))
-  
-  table2 <- mutate(table2,presenceString = case_when(
-    presence == 1 ~ "Presence",
-    presence == 0 ~ "Absence",
-  ))
-  
-  table2$presenceString <- factor(table2$presenceString, levels = c("Presence", "Absence"))
-  
-  #Screened in comparison table
-  posScreenedIn <- subset(ddply(table2,.(position), function(df){sum(df$nTxPoolCases>=cutoff)==2}), V1 == TRUE)
-  posScreenedIn$position <- sort(factor(posScreenedIn$position, levels = newFeatureName))
-  
-  
-  
-  table3 <- tibble("m" = numeric(),"Positions Screened in" = character())
-  
-  table3 <- add_row(.data = table3, "m" = length(posScreenedIn$position), 
-                    "Positions Screened in" = paste0(posScreenedIn$position, collapse=","))
-  
-  
-  write.csv(table3, file.path(tableDir, paste0("sequonPosScreenedIn", fileTag, ".csv")), row.names = FALSE)
-  x = data.frame(vars = featureVars, newName = newFeatureName)
-  write.csv(x$vars[x$newName %in% posScreenedIn$position], file.path(tableDir, paste0("sequonPosVarScreenedIn",fileTag, ".csv")), row.names = FALSE)
-  
- 
-    subTable <- table2
-    pdf(file = file.path(figureDir, paste0("screeningSequons", fileTag,".pdf")), 
-        width = 5, height = 5)
-    textcol <- "black"
-    labelsize <- 12
-    p <- ggplot(subTable, aes(x = presenceString, y = plotY, fill = ind))+
-      geom_tile(colour="white")+
-      guides(fill=guide_legend(title="Number of\ncases"))+
-      scale_y_discrete(expand=c(0,0))+
-      scale_fill_manual(values=c("#008080", "grey"))+
-      theme_grey(base_size=10)+
-      #facet_grid(cols = vars(studySiteF), labeller = label_value)+
-      xlab("")+
-      ylab("")+
-      #coord_equal()+
-      ggtitle("Presence/Absence of a Sequon")+
-      theme(
-        legend.position="right",legend.direction="vertical",
-        legend.title=element_text(colour=textcol, size = labelsize),
-        legend.margin=margin(grid::unit(0,"cm")),
-        legend.text=element_text(colour=textcol,size=labelsize,face="bold"),
-        legend.key.height=grid::unit(0.8,"cm"),
-        legend.key.width=grid::unit(0.4,"cm"),
-        #plot.margin = grid::unit(c(0,0,marginb,0 ), "cm"), #top, right, bottom, left
-        plot.title = element_text(colour=textcol, hjust = 0.5, vjust = 0.2, size = 12),
-        axis.text.x = element_text(colour=textcol, angle = 0, hjust = 0.5,vjust = 0, size = labelsize),
-        axis.text.y = element_text(colour=textcol,size = labelsize, vjust = 0.2),
-        strip.text.x = element_text(colour=textcol,size = 16))
-    print(p)
-    dev.off()
-    
-
-}
