@@ -56,6 +56,16 @@ lengthHypervariable_tier1 <- colnames(dat)[grepl("length.hypervariable",colnames
 electrochemicalCharge_tier1 <- colnames(dat)[grepl("charge",colnames(dat))]
 cysteineCount_tier1 <- colnames(dat)[grepl("cysteine.count",colnames(dat))]
 
+#summarize ordinal variables
+temp <- select(filter(dat, eventInd==1), all_of(c(numSequon_tier1,lengthHypervariable_tier1,
+                             electrochemicalCharge_tier1, cysteineCount_tier1 )))
+
+for(var in colnames(temp)){
+  print(var)
+  print(table(temp[,var]))
+  
+}
+
 hdist.zspace_tier1 <- colnames(dat)[grepl("hdist.zspace",colnames(dat)) & grepl("tier1",colnames(dat))]
 hdist.zspace_tier2 <- colnames(dat)[grepl("hdist.zspace",colnames(dat)) & grepl("tier2",colnames(dat))]
 
