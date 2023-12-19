@@ -44,11 +44,11 @@ get.minvar <- function (n=234, n.vx=130, p=400, fwer=0.05) {
     # set up the treatment differences by our minority class so that we catch
     # cases break along the diagnal; all minority cases in one treatment arm and all majority cases in the other treatment arm
     # the least-significant option
-    # Li : Since all cases are assigned to the minority mark group, the VE difference between match vs. mismatch would be the greatest. 
+    
     if (n.vx <= n / 2) {
-      data.tmp[n:(n - minvar[iter] + 1)] <- 1
-    } else {
       data.tmp[1:minvar[iter]] <- 1
+    } else {
+      data.tmp[n:(n - minvar[iter] + 1)] <- 1 
     }
     
     # determine our p-value and return the cutoff if we reach FWER significance

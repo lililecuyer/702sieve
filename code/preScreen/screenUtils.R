@@ -29,20 +29,20 @@ cellPaste <- function(screenedIn, celllength = 65){
 #produce screen tables and heat maps for match/mismatch
 featureScreen.MatchvsMismatch <- function(sieveData, featureVars, newFeatureName, cutoff = 4, tableDir, figureDir, fileName, plotTitle){
 
-  featureData <- subset(dplyr::select(sieveData, all_of(c("subjid","armdesc", "hiv1event",featureVars))), hiv1event == 1)
-  colnames(featureData ) <- c("subjid","armDesc", "event",newFeatureName)
+  featureData <- subset(dplyr::select(sieveData, all_of(c("subjid","TRT01P", "hiv1event",featureVars))), hiv1event == 1)
+  colnames(featureData ) <- c("subjid","TRT01P", "hiv1event",newFeatureName)
   
   featureLongFormat <- tidyr::pivot_longer(featureData, cols = all_of(newFeatureName), 
                                            names_to = "position", 
                                            values_to = "match",
                                            values_drop_na = TRUE)#there are NAs in the sequence
 
-  freqsTable <- plyr::ddply(featureLongFormat, .(armDesc, position, match), 
+  freqsTable <- plyr::ddply(featureLongFormat, .(TRT01P, position, match), 
                                   function(df){
                                     length(unique(df$subjid))
                                   })
 
-  table1 <- tibble(armDesc = freqsTable$armDesc,
+  table1 <- tibble(TRT01P = freqsTable$TRT01P,
                    position = freqsTable$position,
                    match = freqsTable$match,
                    "nCases" = freqsTable$V1)
@@ -149,20 +149,20 @@ featureScreen.MatchvsMismatch <- function(sieveData, featureVars, newFeatureName
 #produce screen tables and heat maps for amino acid present/absent
 featureScreen.presentVsAbsent <- function(sieveData, featureVars, newFeatureName, cutoff = 4, tableDir, figureDir, fileName, plotTitle){
   #browser()
-  featureData <- subset(dplyr::select(sieveData, all_of(c("subjid","armdesc", "hiv1event",featureVars))), hiv1event == 1)
-  colnames(featureData ) <- c("subjid","armDesc", "event",newFeatureName)
+  featureData <- subset(dplyr::select(sieveData, all_of(c("subjid","TRT01P", "hiv1event",featureVars))), hiv1event == 1)
+  colnames(featureData ) <- c("subjid","TRT01P", "hiv1event",newFeatureName)
   
   featureLongFormat <- tidyr::pivot_longer(featureData, cols = all_of(newFeatureName), 
                                            names_to = "position", 
                                            values_to = "present",
                                            values_drop_na = TRUE)#there are NAs in the sequence
   
-  freqsTable <- plyr::ddply(featureLongFormat, .(armDesc, position, present), 
+  freqsTable <- plyr::ddply(featureLongFormat, .(TRT01P, position, present), 
                             function(df){
                               length(unique(df$subjid))
                             })
   
-  table1 <- tibble(armDesc = freqsTable$armDesc,
+  table1 <- tibble(TRT01P = freqsTable$TRT01P,
                    position = freqsTable$position,
                    present = freqsTable$present,
                    "nCases" = freqsTable$V1)
