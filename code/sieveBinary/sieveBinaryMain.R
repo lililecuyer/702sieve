@@ -51,17 +51,7 @@ residueScreenedIn_tier2 <- read.csv(file.path(repoDir, paste0("702sieve/tables/p
 c1086matchScreenedIn_tier2 <- read.csv(file.path(repoDir, paste0("702sieve/tables/preScreen/varc1086RmatchvsMismatch_tier2",".csv")))
 cTV1matchScreenedIn_tier2 <- read.csv(file.path(repoDir, paste0("702sieve/tables/preScreen/varcTV1RmatchvsMismatch_tier2",".csv")))
 
-quantitativeMark_tier1 <- read.csv(file.path(repoDir, paste0("702sieve/tables/preScreen/varquantitativeMarksScreenedIn_tier1",".csv"))) 
-quantitativeMark_tier2 <- read.csv(file.path(repoDir, paste0("702sieve/tables/preScreen/varquantitativeMarksScreenedIn_tier2",".csv"))) 
 
-
-
-adjustList <- list(tier1Type1to3 = c(alvacMatchScreenedIn_tier1$x, residueScreenedIn_tier1$x, sequonScreenedIn_tier1$x),
-                   tier1Type4to7 = quantitativeMark_tier1$x,
-                   tier2Type1 = residueScreenedIn_tier2$x,
-                   tier2Type3 = alvacMatchScreenedIn_tier2$x,
-                   tier2Type2and4and5 = quantitativeMark_tier2$x
-)
 ####################################################################################
 
 
@@ -71,7 +61,6 @@ binaryMarks <- c(alvacMatchScreenedIn_tier1$x, residueScreenedIn_tier1$x, sequon
                  cTV1matchScreenedIn_tier1$x, alvacMatchScreenedIn_tier2$x, residueScreenedIn_tier2$x, c1086matchScreenedIn_tier2$x,
                  cTV1matchScreenedIn_tier2$x, "lineageLabel")
 
-continousMarks<- c(quantitativeMark_tier1$x, quantitativeMark_tier2$x)
 
 
 #use competing risks survival models to obtain VE for all binary marks
@@ -174,7 +163,7 @@ tier2TypeB <- sort(c(aaPos[loc(aaPos,"364"):loc(aaPos,"374")], aaPos[loc(aaPos,"
                      aaPos[loc(aaPos,"197"):loc(aaPos,"207")], aaPos[loc(aaPos,"425"):loc(aaPos,"437")],
                      aaPos[loc(aaPos,"274"):loc(aaPos,"283")]))
 tier2TypeC <- aaPos[loc(aaPos,"295"):loc(aaPos,"322")] 
-tier2TypeD <- c("459", aaPos[loc(aaPos,"466"):loc(aaPos,"470")]) 
+tier2TypeD <- c(aaPos[loc(aaPos,"466"):loc(aaPos,"470")]) 
 
 forestplotBinary (filter(residue_scanning_tier2_fp, mark %in% tier2TypeA)[,-1], "VE_residue_scanning_tier2_typeA.pdf", figureDir)
 forestplotBinary (filter(residue_scanning_tier2_fp, mark %in% tier2TypeB)[,-1], "VE_residue_scanning_tier2_typeB.pdf", figureDir)

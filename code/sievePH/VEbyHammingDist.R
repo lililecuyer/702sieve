@@ -35,8 +35,8 @@ dist <- grep("hdist", colnames(dat), value=TRUE)
 # axis labels
 xLab <- case_when(dist =="hdist.zspace.1086.gp120.tier2" ~ "PC-weighted Hamming Distance to C.1086",
                   dist =="hdist.zspace.TV1.gp120.tier2" ~ "PC-weighted Hamming Distance to C.TV1",
-                  dist=="hdist.zspace.96ZM651.V2.linear.epitope.tier2" ~ "V2 Linear Epitope PC-weighted Hamming Distance to C.96ZM651",
-                  dist=="hdist.zspace.96ZM651.CD4.binding.site.tier2" ~ "CD4 Contact Epitopes PC-weighted Hamming Distance to C.96ZM651",
+                  dist=="hdist.zspace.96ZM651.V2.linear.epitope.tier2" ~ "V2 Linear Epitope PC-weighted\nHamming Distance to C.96ZM651",
+                  dist=="hdist.zspace.96ZM651.CD4.binding.site.tier2" ~ "CD4 Contact Epitopes PC-weighted\nHamming Distance to C.96ZM651",
                   dist=="hdist.zspace.96ZM651.V5.tier2" ~ "V5 PC-weighted Hamming Distance to C.96ZM651",
                   dist=="hdist.zspace.96ZM651.V3.tier2" ~ "V3 PC-weighted Hamming Distance to C.96ZM651",
                   dist=="hdist.zspace.96ZM651.tier2" ~ "PC-weighted Hamming Distance to C.96ZM651")

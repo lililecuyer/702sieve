@@ -25,7 +25,7 @@ cTV1match_tier2 <- colnames(dat)[grepl("1mer.TV1.match.tier2",colnames(dat))]
 cTV1matchNewName_tier2 <- plyr::laply(strsplit(cTV1match_tier2, split = ".", fixed = TRUE) , function(list){paste0(list[2])})
 posIsAA_tier2 <- colnames(dat)[grepl(".is.",colnames(dat)) & grepl("hxb2",colnames(dat)) & grepl("tier2",colnames(dat)) &(!grepl("is.sequon.tier2",colnames(dat)))]
 posIsAAnewName_tier2 <- plyr::laply(strsplit(posIsAA_tier2, split = ".", fixed = TRUE) , function(list){paste0(list[2],list[4])})
-hd_tier2 <- colnames(dat)[grepl("hdist",colnames(dat)) & !colnames(dat) %in% c("hdist.zspace.1086.gp120.tier2", "hdist.zspace.TV1.gp120.tier2")]
+hd_tier2 <- colnames(dat)[grepl("hdist",colnames(dat))]
 numCysteines_tier2 <- colnames(dat)[grepl("cysteine",colnames(dat)) & grepl("tier2",colnames(dat))]
 
 

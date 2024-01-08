@@ -52,7 +52,7 @@ quantitativeMark_tier1 <- read.csv(file.path(repoDir, paste0("702sieve/tables/pr
 quantitativeMark_tier2 <- read.csv(file.path(repoDir, paste0("702sieve/tables/preScreen/varquantitativeMarksScreenedIn_tier2",".csv"))) 
 
 
-
+quantitativeMark_tier2 <- filter(quantitativeMark_tier2, x %in% c("hdist.zspace.1086.gp120.tier2", "hdist.zspace.TV1.gp120.tier2"))
 
 
 binaryMarks <- c(alvacMatchScreenedIn_tier1$x, residueScreenedIn_tier1$x, sequonScreenedIn_tier1$x, alvacMatchScreenedIn_tier2$x, residueScreenedIn_tier2$x)
@@ -174,7 +174,7 @@ tier2TypeB <- sort(c(aaPos[loc(aaPos,"364"):loc(aaPos,"374")], aaPos[loc(aaPos,"
                 aaPos[loc(aaPos,"197"):loc(aaPos,"207")], aaPos[loc(aaPos,"425"):loc(aaPos,"437")],
                 aaPos[loc(aaPos,"274"):loc(aaPos,"283")]))
 tier2TypeC <- aaPos[loc(aaPos,"295"):loc(aaPos,"322")] 
-tier2TypeD <- c("459", aaPos[loc(aaPos,"466"):loc(aaPos,"470")]) 
+tier2TypeD <- c(aaPos[loc(aaPos,"466"):loc(aaPos,"470")]) 
 
 for(adjustGroup in c("tier1Type1to3","tier1Type4to7","tier2Type1", "tier2Type3","tier2Type2and4and5")){
   
